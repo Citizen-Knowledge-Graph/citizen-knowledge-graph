@@ -1,7 +1,4 @@
 .idea/
-*.iml
-.mvn/
-target/
 .gradle/
 build/
 .DS_Store
@@ -10,12 +7,3 @@ node_modules/
 package-lock.json
 
 jena-tdb/
-*.rdf
-*.graphml
-logs/
-export/
-import/
-markdown/
-
-src/main/resources/static/graph-query-visualizer/*
-!src/main/resources/static/graph-query-visualizer/.gitkeep
