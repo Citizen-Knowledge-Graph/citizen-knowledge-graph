@@ -2,6 +2,8 @@
 
 This is the prototype for demoing the idea of a "Citizen Knowledge Graph" app and ecosystem. [Vanessa](https://espinosaureta.com/), [@wbglaeser](https://github.com/wbglaeser) and [@benjaminaaron](https://github.com/benjaminaaron) applied with this idea to the 15th round of the [Prototype Fund](https://prototypefund.de).
 
+<img src="https://user-images.githubusercontent.com/5141792/271697710-e2b6acee-1eef-45ea-9bab-4a83fc1896d5.png">
+
 Parts of it are implemented and others are only mocked for the purpose of the demo. There is also a paragraph-by-paragraph animation on some pages of the app to go well together with the narration in **[this video](https://youtube.com/playlist?list=PLyt46q60EbD9-xm2_0MjYisG2OcVBqhjI)**.
 
 ## Setup
