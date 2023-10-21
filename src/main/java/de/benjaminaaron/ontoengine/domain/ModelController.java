@@ -3,6 +3,7 @@ package de.benjaminaaron.ontoengine.domain;
 import lombok.Getter;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -10,14 +11,22 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.shacl.ShaclValidator;
+import org.apache.jena.shacl.Shapes;
+import org.apache.jena.shacl.ValidationReport;
+import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -143,10 +152,20 @@ public class ModelController {
     }
 
     public boolean addNewStatement(String sub, String pred, String obj) {
+        RDFNode object;
+        if (obj.startsWith("http")) {
+            object = mainModel.createResource(obj);
+        } else {
+            try {
+                object = mainModel.createTypedLiteral(Integer.parseInt(obj));
+            } catch (NumberFormatException e) {
+                object = mainModel.createLiteral(obj);
+            }
+        }
         Statement statement = mainModel.createStatement(
             mainModel.createResource(ensureUri(sub)),
             mainModel.createProperty(ensureUri(pred)),
-            obj.startsWith("http") ? mainModel.createResource(obj) : mainModel.createLiteral(obj)
+            object
         );
         if (statementAlreadyPresent(statement)) {
             return false;
@@ -167,5 +186,16 @@ public class ModelController {
         JsonObject result = new JsonObject();
         result.put("triples", triples);
         return result;
+    }
+
+    @Value("classpath:shapes.ttl")
+    private Path SHAPES_FILE;
+
+    public void dev() {
+        Graph shapesGraph = RDFDataMgr.loadGraph(SHAPES_FILE.toString());
+        Shapes shapes = Shapes.parse(shapesGraph);
+        ValidationReport report = ShaclValidator.get().validate(shapes, mainModel.getGraph());
+        ShLib.printReport(report);
+        // RDFDataMgr.write(System.out, report.getModel(), Lang.TTL);
     }
 }

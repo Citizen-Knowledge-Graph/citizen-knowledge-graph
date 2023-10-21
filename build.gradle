@@ -17,6 +17,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-websocket"
     implementation "org.apache.jena:jena-core:4.7.0"
     implementation "org.apache.jena:jena-tdb:4.7.0"
+    implementation "org.apache.jena:jena-shacl:4.7.0"
     implementation "com.github.slugify:slugify:3.0.2"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }

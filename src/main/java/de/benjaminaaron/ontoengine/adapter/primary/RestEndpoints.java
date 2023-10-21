@@ -47,6 +47,7 @@ public class RestEndpoints {
         return ResponseEntity.ok().body(report.toString());
     }
 
+    // curl -X POST -H "Content-Type: application/json" -d '["sub", "pred", "obj"]' http://localhost:8080/api/v1/ckg/addNewStatement
     @PostMapping(value = "/addNewStatement")
     public ResponseEntity<String> addNewStatement(@RequestBody List<String> statementParts) {
         boolean wasAdded = modelController.addNewStatement(
@@ -57,5 +58,12 @@ public class RestEndpoints {
     @GetMapping(value = "/getAllTriples")
     public ResponseEntity<String> getAllTriples() {
         return ResponseEntity.ok().body(modelController.getAllTriples().toString());
+    }
+
+    // curl localhost:8080/api/v1/ckg/dev
+    @GetMapping(value = "/dev")
+    public ResponseEntity<String> dev() {
+        modelController.dev();
+        return ResponseEntity.ok().body("dev");
     }
 }
