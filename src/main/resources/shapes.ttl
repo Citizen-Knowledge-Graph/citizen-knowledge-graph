@@ -2,11 +2,6 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# "mainPerson", "owns", "http://ckg.de/default#House1"
-# "House1", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://ckg.de/default#House"
-# "House1", "roofArea", "110"
-# "House1", "houseAge", "35"
-
 ckg:EligibleHouseShape
     a sh:NodeShape ;
     sh:targetClass ckg:House ;

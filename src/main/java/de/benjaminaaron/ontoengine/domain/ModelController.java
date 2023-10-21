@@ -3,6 +3,7 @@ package de.benjaminaaron.ontoengine.domain;
 import lombok.Getter;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
@@ -11,14 +12,19 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -192,8 +198,59 @@ public class ModelController {
     private Path SHAPES_FILE;
 
     public void dev() {
-        Graph shapesGraph = RDFDataMgr.loadGraph(SHAPES_FILE.toString());
-        Shapes shapes = Shapes.parse(shapesGraph);
+        /*
+        "mainPerson", "owns", "http://ckg.de/default#House1"
+        "House1", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://ckg.de/default#House"
+        "House1", "roofArea", "110"
+        "House1", "houseAge", "35"
+        */
+
+        // Graph shapesGraph = RDFDataMgr.loadGraph(SHAPES_FILE.toString());
+
+        Model model = ModelFactory.createDefaultModel();
+
+        String ckg = "http://ckg.de/default#";
+        String sh = "http://www.w3.org/ns/shacl#";
+        String xsd = "http://www.w3.org/2001/XMLSchema#";
+        String rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+
+        model.setNsPrefix("ckg", ckg);
+        model.setNsPrefix("sh", sh);
+        model.setNsPrefix("xsd", xsd);
+
+        Resource eligibleHouseShape = ResourceFactory.createResource(ckg + "EligibleHouseShape");
+        Resource house = ResourceFactory.createResource(ckg + "House");
+        Property roofArea = ResourceFactory.createProperty(ckg + "roofArea");
+        Property houseAge = ResourceFactory.createProperty(ckg + "houseAge");
+        Property shProperty = ResourceFactory.createProperty(sh + "property");
+        Property shDatatype = ResourceFactory.createProperty(sh + "datatype");
+        Property shMinInclusive = ResourceFactory.createProperty(sh + "minInclusive");
+        Property shMessage = ResourceFactory.createProperty(sh + "message");
+        Property shPath = ResourceFactory.createProperty(sh + "path");
+        Property rdfType = ResourceFactory.createProperty(rdf + "type");
+        Property shTargetClass = ResourceFactory.createProperty(sh + "targetClass");
+
+        model.add(eligibleHouseShape, rdfType, ResourceFactory.createResource(sh + "NodeShape"));
+        model.add(eligibleHouseShape, shTargetClass, house);
+
+        Resource roofAreaShape = model.createResource()
+                .addProperty(shPath, roofArea)
+                .addProperty(shDatatype, ResourceFactory.createResource(xsd + "integer"))
+                .addProperty(shMinInclusive, model.createTypedLiteral("100", XSDDatatype.XSDinteger))
+                .addProperty(shMessage, "Roof area is below the minimum required");
+        model.add(eligibleHouseShape, shProperty, roofAreaShape);
+
+        Resource houseAgeShape = model.createResource()
+                .addProperty(shPath, houseAge)
+                .addProperty(shDatatype, ResourceFactory.createResource(xsd + "integer"))
+                .addProperty(shMinInclusive, model.createTypedLiteral("30", XSDDatatype.XSDinteger))
+                .addProperty(shMessage, "House age is below the minimum required");
+        model.add(eligibleHouseShape, shProperty, houseAgeShape);
+
+        // model.write(System.out, "TTL");
+
+        // Shapes shapes = Shapes.parse(shapesGraph);
+        Shapes shapes = Shapes.parse(model);
         ValidationReport report = ShaclValidator.get().validate(shapes, mainModel.getGraph());
         ShLib.printReport(report);
         // RDFDataMgr.write(System.out, report.getModel(), Lang.TTL);
