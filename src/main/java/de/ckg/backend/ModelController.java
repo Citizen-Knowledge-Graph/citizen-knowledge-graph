@@ -1,9 +1,8 @@
-package de.benjaminaaron.ontoengine.domain;
+package de.ckg.backend;
 
 import lombok.Getter;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
@@ -12,19 +11,14 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.tdb.TDBFactory;
-import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,9 +36,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static de.benjaminaaron.ontoengine.domain.Utils.DEFAULT_URI_NAMESPACE;
-import static de.benjaminaaron.ontoengine.domain.Utils.ensureUri;
-
 @Component
 public class ModelController {
 
@@ -56,7 +47,7 @@ public class ModelController {
     public ModelController() {
         Dataset dataset = TDBFactory.createDataset("jena-tdb");
         mainModel = dataset.getDefaultModel();
-        mainModel.setNsPrefix("ckg", DEFAULT_URI_NAMESPACE);
+        mainModel.setNsPrefix("ckg", Utils.DEFAULT_URI_NAMESPACE);
         printStatements();
     }
 
@@ -84,7 +75,7 @@ public class ModelController {
         Matcher matcher = Pattern.compile("VALUES\\s+\\?\\S+\\s+\\{([^}]+)}").matcher(query);
         if (!matcher.find()) throw new RuntimeException("No VALUES clause found in the query: " + query);
         Map<String, String> prefixes = new HashMap<>(); // extract instead of entering values here
-        prefixes.put("ckg", DEFAULT_URI_NAMESPACE);
+        prefixes.put("ckg", Utils.DEFAULT_URI_NAMESPACE);
         prefixes.put("vcard", "http://www.w3.org/2006/vcard/ns#");
         prefixes.put("foaf", "http://xmlns.com/foaf/0.1#");
         Set<String> valuesInQuery = Arrays.stream(matcher.group(1).trim().split(" "))
@@ -169,8 +160,8 @@ public class ModelController {
             }
         }
         Statement statement = mainModel.createStatement(
-            mainModel.createResource(ensureUri(sub)),
-            mainModel.createProperty(ensureUri(pred)),
+            mainModel.createResource(Utils.ensureUri(sub)),
+            mainModel.createProperty(Utils.ensureUri(pred)),
             object
         );
         if (statementAlreadyPresent(statement)) {
@@ -205,9 +196,9 @@ public class ModelController {
         "House1", "houseAge", "35"
         */
 
-        // Graph shapesGraph = RDFDataMgr.loadGraph(SHAPES_FILE.toString());
+        Graph shapesGraph = RDFDataMgr.loadGraph(SHAPES_FILE.toString());
 
-        Model model = ModelFactory.createDefaultModel();
+        /*Model model = ModelFactory.createDefaultModel();
 
         String ckg = "http://ckg.de/default#";
         String sh = "http://www.w3.org/ns/shacl#";
@@ -248,9 +239,9 @@ public class ModelController {
         model.add(eligibleHouseShape, shProperty, houseAgeShape);
 
         // model.write(System.out, "TTL");
-
-        // Shapes shapes = Shapes.parse(shapesGraph);
-        Shapes shapes = Shapes.parse(model);
+*/
+        Shapes shapes = Shapes.parse(shapesGraph);
+        //Shapes shapes = Shapes.parse(model);
         ValidationReport report = ShaclValidator.get().validate(shapes, mainModel.getGraph());
         ShLib.printReport(report);
         // RDFDataMgr.write(System.out, report.getModel(), Lang.TTL);

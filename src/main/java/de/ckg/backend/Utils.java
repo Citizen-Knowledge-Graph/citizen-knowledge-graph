@@ -1,4 +1,4 @@
-package de.benjaminaaron.ontoengine.domain;
+package de.ckg.backend;
 
 import com.github.slugify.Slugify;
 

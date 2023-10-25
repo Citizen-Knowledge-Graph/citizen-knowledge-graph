@@ -1,7 +1,5 @@
-package de.benjaminaaron.ontoengine.adapter.primary;
+package de.ckg.backend;
 
-import de.benjaminaaron.ontoengine.domain.ModelController;
-import de.benjaminaaron.ontoengine.domain.importer.RdfImporter;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

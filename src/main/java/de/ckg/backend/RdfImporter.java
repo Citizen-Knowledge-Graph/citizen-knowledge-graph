@@ -1,6 +1,5 @@
-package de.benjaminaaron.ontoengine.domain.importer;
+package de.ckg.backend;
 
-import de.benjaminaaron.ontoengine.domain.ModelController;
 import lombok.SneakyThrows;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
