@@ -2,6 +2,8 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+ckg:metadata ckg:author ckg:benjaminaaron .
+
 ckg:EligibleHouseShape
     a sh:NodeShape ;
     sh:targetClass ckg:House ;
