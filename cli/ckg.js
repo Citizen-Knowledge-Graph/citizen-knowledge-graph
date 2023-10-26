@@ -16,7 +16,7 @@ const queriesDir = path.join(__dirname, "queries")
 async function loadDataset(filePath) {
     const { factory, ParserN3 } = await importDependencies()
     const stream = fs.createReadStream(filePath)
-    const parser = new ParserN3()
+    const parser = new ParserN3({ factory })
     return factory.dataset().import(parser.import(stream))
 }
 

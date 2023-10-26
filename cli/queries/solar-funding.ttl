@@ -4,18 +4,18 @@
 
 ckg:metadata ckg:author ckg:benjaminaaron .
 
-ckg:RoofAreaPropertyShape a sh:PropertyShape ;
-    sh:path ckg:roofArea ;
-    sh:datatype xsd:integer ;
-    sh:minInclusive 100 ;
-    sh:message "Roof area is below the minimum required" .
-
-ckg:HouseAgePropertyShape a sh:PropertyShape ;
-    sh:path ckg:houseAge ;
-    sh:datatype xsd:integer ;
-    sh:minInclusive 30 ;
-    sh:message "House age is below the minimum required" .
-
-ckg:EligibleHouseShape a sh:NodeShape ;
+ckg:HouseEligibleForSolarFundingShape
+    a sh:NodeShape ;
     sh:targetClass ckg:House ;
-    sh:property ckg:RoofAreaPropertyShape, ckg:HouseAgePropertyShape .
+    sh:property [
+        sh:path ckg:roofArea ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 100 ;
+        sh:message "Roof area is below the minimum required" ;
+    ] ;
+    sh:property [
+        sh:path ckg:houseAge ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 30 ;
+        sh:message "House age is below the minimum required" ;
+    ] .
