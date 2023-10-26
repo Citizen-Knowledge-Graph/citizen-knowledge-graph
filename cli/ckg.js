@@ -31,7 +31,14 @@ async function runQueryOnProfile(queryName, profileName) {
     // get report details: https://github.com/zazuko/rdf-validate-shacl#usage
 
     console.log("--> " + profileName + " is" + (report.conforms ? " " : " not ") + "eligible for " + queryName)
+    // TODO in case of non-conformity, print the violations
 }
+
+// TODO
+async function runAllQueriesOnProfile(profileName) {}
+async function runAllQueriesOnAllProfiles() {}
+function createProfile() {}
+function createQuery() {}
 
 const commands = {
     "run-query-on-profile": runQueryOnProfile,
