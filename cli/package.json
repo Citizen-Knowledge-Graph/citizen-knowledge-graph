@@ -1,0 +1,16 @@
+{
+  "name": "ckg-cli",
+  "version": "0.0.1",
+  "bin": {
+    "ckg": "./ckg.js"
+  },
+  "scripts": {
+    "start": "node ckg.js"
+  },
+  "main": "ckg.js",
+  "dependencies": {
+    "@rdfjs/parser-n3": "^2.0.1",
+    "rdf-ext": "^2.4.0",
+    "rdf-validate-shacl": "^0.5.1"
+  }
+}
