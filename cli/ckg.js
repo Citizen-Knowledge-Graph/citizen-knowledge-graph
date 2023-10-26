@@ -1,34 +1,15 @@
-const fs = require("fs")
-const path = require("path")
-
-async function importDependencies() {
-    const [{ default: rdfExt }, { default: ParserN3 }, { default: SHACLValidator }] = await Promise.all([
-        import("rdf-ext"),
-        import("@rdfjs/parser-n3"),
-        import("rdf-validate-shacl")
-    ])
-    return { factory: rdfExt, ParserN3, SHACLValidator }
-}
-
-const profilesDir = path.join(__dirname, "profiles")
-const queriesDir = path.join(__dirname, "queries")
-
-async function loadDataset(filePath) {
-    const { factory, ParserN3 } = await importDependencies()
-    const stream = fs.createReadStream(filePath)
-    const parser = new ParserN3({ factory })
-    return factory.dataset().import(parser.import(stream))
-}
+import SHACLValidator from "rdf-validate-shacl"
+import factory from "@zazuko/env-node"
 
 async function runQueryOnProfile(queryName, profileName) {
-    const { factory, SHACLValidator } = await importDependencies()
-    const shapes = await loadDataset(path.join(queriesDir, `${queryName}.ttl`))
-    const data = await loadDataset(path.join(profilesDir, `${profileName}.ttl`))
+    const shapes = await factory.dataset().import(factory.fromFile(`queries/${queryName}.ttl`))
+    const data = await factory.dataset().import(factory.fromFile(`profiles/${profileName}.ttl`))
 
     const validator = new SHACLValidator(shapes, { factory })
     const report = await validator.validate(data)
 
     // get report details: https://github.com/zazuko/rdf-validate-shacl#usage
+    // console.log(await report.dataset.serialize({ format: "text/n3" }))
 
     console.log("--> " + profileName + " is" + (report.conforms ? " " : " not ") + "eligible for " + queryName)
     // TODO in case of non-conformity, print the violations
