@@ -1,6 +1,6 @@
 # Citizen Knowledge Graph
 
-This is the prototype for demoing the idea of a "Citizen Knowledge Graph" app and ecosystem. [Vanessa](https://espinosaureta.com/), [@wbglaeser](https://github.com/wbglaeser) and [@benjaminaaron](https://github.com/benjaminaaron) applied with this idea to the 15th round of the [Prototype Fund](https://prototypefund.de).
+This is an Electron-based prototype for demoing the idea of a "Citizen Knowledge Graph" app and ecosystem.
 
 <img src="https://user-images.githubusercontent.com/5141792/271697710-e2b6acee-1eef-45ea-9bab-4a83fc1896d5.png">
 
